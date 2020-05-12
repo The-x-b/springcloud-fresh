@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 注意：namespace中的值必须是对应接口的全路径，SQL语句中的id值必须是这个接口中对应方法名称 -->
+<mapper namespace="com.yc.DayFresh.mapper.IGoodsInfoMapper">
+	<select id="findAll"  resultType="GoodsType">
+		select tno, tname, pic, status from goodstype order by tno asc
+	</select>
+	
+	<insert id="add" parameterType="GoodsInfo" >
+		insert into goodsinfo values (0, #{gname}, #{tno}, #{price}, #{intro}, #{balance}, #{pics}, #{unit}, #{qperied}, #{weight}, #{descr})
+	</insert>
+	
+	<select id="finds"  resultType="Goodsinfo">
+		select gno, gname, tno, price, pics from goodsinfo
+	</select>
+	
+	<select id="find"  parameterType="string" resultType="Goodsinfo">
+		select gno,gname, tno, price, pics, unit from goodsinfo where tno=#{tno} order by gno asc
+	</select>
+	
+	<select id="findetails" parameterType="string"  resultType="Goodsinfo">
+		select  gname, weight, price, pics, intro, unit, descr from goodsinfo where gno=#{gno}
+	</select>
+	
+	<select id="findpay"   resultType="map">
+		select c.mno, c.gno, g.gname, g.weight, g.price, g.pics, g.unit, c.num from goodsinfo g , cartinfo c where g.gno=c.gno and cno in
+		<foreach collection="list" open="(" separator="," close=")order by gno asc" item="item">
+    		#{item}
+    	</foreach>
+	</select>
+	
+	<update id="delete">
+		delete  from cartinfo where cno in
+		<foreach collection="list" open="(" separator="," close=")" item="item">
+    		#{item}
+    	</foreach>
+	</update>
+		
+	<update id="updates" parameterType="list">
+		update goodsinfo set balance = 
+		case gno
+			<foreach collection="list" item="item">
+				when #{item.gno} then balance - #{item.num}
+			</foreach>
+			end
+			where gno in
+			<foreach collection="list" open="(" close=")" item="item" separator=",">
+				#{item.gno}
+			</foreach>
+	</update>
+	
+	<select id="backfind" resultType="Goodsinfo">
+		select gno,gname, tno, price, pics, balance, unit, qperied, weight  from goodsinfo
+	</select>
+</mapper>

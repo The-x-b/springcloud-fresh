@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 注意：namespace中的值必须是对应接口的全路径，SQL语句中的id值必须是这个接口中对应方法名称 -->
+<mapper namespace="com.yc.DayFresh.mapper.IAdminInfoMapper">
+	<select id="login" parameterType="AdminInfo" resultType="AdminInfo">
+		select aid, aname, tel from admininfo where aname=#{aname} and pwd=md5(#{pwd})
+	</select>
+	
+	<insert id="addname" parameterType="AdminInfo">
+		insert into admininfo values(0, #{aname}, md5(#{pwd}), #{tel})
+	</insert>
+	
+	<select id="logins" parameterType="MenberInfo" resultType="MenberInfo">
+		select mno, nickname from menberinfo where nickname=#{nickname} and pwd=md5(#{pwd})
+	</select>
+	
+	<select id="findByPage" parameterType="AdminInfo" resultType="map">
+		select aid, aname, pwd, tel from admininfo limit #{pageNo}, #{pageSize}
+	</select>
+	
+	<delete id="dele" parameterType="string">
+		delete from admininfo where aid=#{aid}
+	</delete>
+	
+	<update id="update" parameterType="AdminInfo">
+		update admininfo set aname=#{aname}, pwd=md5(#{pwd}), tel=#{tel} where aid=#{aid}
+	</update> 
+	
+	<update id="changepwd" parameterType="map">
+		update admininfo set pwd=md5(#{pwd}) where aid=#{aid}
+	</update> 
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 需要扫描的包 -->
+	<context:component-scan base-package="com.yc.DayFresh" >
+		<!-- 一下注解不处理 -->
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RequestBody"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RequestMapping"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RequestParam"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+	</context:component-scan>
+	
+	  <!-- 启动mvc注解 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+    
+    <!-- 放过静态资源 -->
+    <mvc:default-servlet-handler />
+    
+     <!-- 配置拦截器 -->
+    <mvc:interceptors>
+    	<mvc:interceptor>
+    		<mvc:mapping path="/back/page/**"></mvc:mapping>
+    		<bean class="com.yc.DayFresh.interceptor.BackForwardInterceptor" />
+    	</mvc:interceptor>
+    	
+    	<mvc:interceptor>
+    		<mvc:mapping path="/front1/**"></mvc:mapping>
+    		<bean class="com.yc.DayFresh.interceptor.FrontForwardInterceptor" />
+    	</mvc:interceptor>
+    </mvc:interceptors>
+   
+
+</beans>

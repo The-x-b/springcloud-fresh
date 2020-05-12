@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>源辰-浏览新闻信息</title>
+<link rel="shortcut icon" href="../images/copylogo.png" type="image/x-icon" />
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/main1.css">
+
+</head>
+<body>
+<div id="table" class="mt10">
+	<div class="box span10 oh">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+			<thead>
+				<tr>
+					<th width="100">管理员编号</th>
+                   	<th width="100">名称</th>
+                   	<th width="120">密码</th>
+                   	<th width="120">电话号码</th>
+                   	<th width="120">操作</th>
+                </tr>
+             </thead>
+             <tbody id="news_info" align="center">
+				<tr>
+					
+				</tr>
+             </tbody>
+		</table>
+        <div class="page mt10">
+		<div class="pagination">
+            <ul id ="pagination_info">
+				<li class="first-child active"><a href="javascript:void()" onclick=" ">首页</a></li>
+				<li class="active"><a href="javascript:void()" onclick=" ">1</a></li>
+				<li><a href="javascript:void()" onclick=" ">2</a></li>
+				<li class="last-child"><a href="javascript:void()" onclick=" ">末页</a></li>'
+			</ul>
+		</div>
+        </div>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript">
+var pageNo = 1;
+var pageSize = 10;
+var totalSize = 0;
+var totalPage = 0;
+
+$(function(){
+	$.post("../admin/finds", {pageNo:pageNo, pageSize:pageSize}, function(data) {
+		/* totalSize = data.total;
+		totalPage = Math.ceil(totalSize / pageSize);
+		
+		var pageInfo = '<li class="first-child active"><a href="javascript:void()" onclick="findByPage(this, 1)">首页</a></li>';
+		pageInfo += '<li class="active"><a href="javascript:void()" onclick="findByPage(this, 1)">1</a></li>';
+		for (var i = 2; i <= totalPage; i ++) {
+			pageInfo += '<li><a href="javascript:void()" onclick="findByPage(this, ' + i + ')">' + i +'</a></li>';
+		}
+		pageInfo += '<li class="last-child"><a href="javascript:void()" onclick="findByPage(this, ' + totalPage + ')">末页</a></li>';
+		
+		$("#pagination_info").append($(pageInfo)); */
+		
+		var str = "";
+		$.each(data, function(index, item) {
+			str += '<tr><td><input id="ipn" type="text" value="'+ item.aid +'"></input></td>';
+			str += '<td><input id="inp'+item.aid+'" type="text" value="' + item.aname + '"></input></td>';
+			str += '<td><input id="inp2'+item.aid+'" type="text" type="text" value="' + item.pwd +'"></input></td>';
+			str += '<td><input id="inp3'+item.aid+'" type="text" value="' + item.tel + '"></input></td>';
+			str += '<td><a href="javascript:viewTestShow('+item.aid+',)">[修改]</a>&nbsp;&nbsp';
+			str += '<a href="javascript:viewTestShow1('+item.aid+')">[删除]</a></td></tr>';
+		});
+		$("#news_info").append($(str));
+	}, "json");
+});
+
+/*function findByPage(obj, page) {
+	pageNo = page;
+	$.post("../admin/finds", {op:"findByPage", pageNo:pageNo, pageSize:pageSize}, function(data) {
+		data = JSON.parse(data);
+		var str = "";
+		$.each(data, function(index, item) {
+			str += "<tr><td>" + item.aid + "</td><td>" + item.aname + "</td><td>" + item.pwd + "</td><td>" + item.tel + "</td><td><a href=''>[修改]</a>&nbsp;&nbsp;<a href=''>[删除]</a>&nbsp;&nbsp;<a href=''>[查看]</a></td></tr>";
+		});
+		$("#news_info").html("").append($(str));
+		
+		$("#pagination_info>li").removeClass("active");
+		$(obj).parent().addClass("active");
+	}, "json");
+}*/
+
+function viewTestShow1(aid) {
+	$.post("../admin/delete", {aid:aid}, function(data){
+		data= parseInt($.trim(data));
+		if(data > 0){
+			alert("删除管理员成功");
+			
+		}else{
+			alert("删除失败，请稍后重试...");
+		}
+	}, "text");
+}
+
+
+function viewTestShow(aid) {
+	//console.log(aid);
+	var aname = $("#inp"+aid+"").val();
+	var pwd = $("#inp2"+aid+"").val();
+	var tel = $("#inp3"+aid+"").val();
+	//console.log(pwd);
+	//console.log(tel);
+	//console.log(aname);
+	 $.post("../admin/update", {aid:aid, aname:aname, pwd:pwd, tel:tel}, function(data){
+		data= parseInt($.trim(data));
+		if(data > 0){
+			alert("修改信息成功...");
+			
+		}else{
+			alert("修改信息失败，请稍后重试...");
+		}
+	}, "text"); 
+}
+
+</script>
+</html>

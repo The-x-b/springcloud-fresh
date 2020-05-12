@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/main1.css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/ajaxfileupload.js"></script>
+</head>
+
+<style>
+
+<style>
+#divs {
+	width: 50px;
+	height: 50px;
+	/* 如果需要让图片各方位居中 */
+	display: flex;
+  	justify-content: center;
+  	align-items: center;
+}
+/* 让图片自适应父级大小 */
+img {
+	width: auto;
+	height: auto;
+	max-width: 30%;
+	max-height: 30%;
+}
+input{
+	text-align:center;
+
+}
+#yse{
+	float:right;
+	margin: 0px 100px 0px 0px ;
+}
+
+</style>
+</style>
+<body>
+<div id="table" class="mt10">
+	<div class="box span10 oh">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+			<thead>
+				<tr>
+                   	<th width="200">类型编号</th>
+					<th width="150">类型名称</th>
+                   	<th width="200">类型图片</th>
+                   	<th width="200">类型状态</th>
+                   	<th width="200">操作</th>
+                </tr>
+             </thead>
+             <tbody id="goodstype_info" align="center">
+				
+             </tbody>
+		</table>
+		<div class="page mt10">
+		 <a id="yse" href="javascript:viewTestShow2()">[添加]</a>
+		<div class="pagination">
+		
+            <ul>
+                <li class="first-child"><a href="#">首页</a></li>
+                <li class="disabled"><span>上一页</span></li>
+                <li class="active"><span>1</span></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">下一页</a></li>
+                <li class="last-child"><a href="#">末页</a></li>
+            </ul>
+		</div>
+        </div>
+	</div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+
+$(function(){
+	findAll();
+})
+
+function findAll() {
+	$.post("../goods/findType", null, function(data){
+		var str = "";
+		$.each(data, function(index, item){
+			str += "<tr><td><input text-align='center' id='inp"+item.tno+"' type='text' value='" + item.tno + "'></input></td>";
+			str += "<td><input text-align='center' id='inp1' type='text' value='" + item.tname + "'></input></td>";
+			str += "<td><input type='file' id='file"+item.tno+"' style='opacity:0;' onclick='changepic("+item.tno+")' capture='camera' accept='image/jpeg,image/png,image/jpeg,image/gif'><div id='divs'><img id='img"+item.tno+"' src='../../"+item.pic+"'/></div></td>";
+			str += "<td><input text-align='center' id='inp3' type='text' value='" + item.status + "'></input></td>";
+			str += "<td><a href='javascript:viewTestShow("+item.aid+")'>[修改]</a>&nbsp;&nbsp;<a href='javascript:viewTestShow1("+item.aid+")''>[删除]</a></td></tr>";
+		})
+		$("#goodstype_info").append($(str));
+	}, "json");
+}
+
+function changepic(tno) {
+	$("#file"+tno+"").change(function(event){
+		var files = event.target.files, file;
+		if (files && files.length > 0) {
+	        // 获取目前上传的文件
+		    file = files[0];// 文件大小校验的动作
+		    if(file.size > 1024 * 1024 * 2) {
+			     alert('图片大小不能超过 2MB!');
+			     return false;
+		    }
+		    // 获取 window 的 URL 工具
+		    var URL = window.URL || window.webkitURL;
+		    // 通过 file 生成目标 url  获取真实的路径
+		    var imgURL = URL.createObjectURL(file);
+		    //用attr将img的src属性改成获得的url
+		    $("#img"+tno+"").attr("src",imgURL);
+		    }
+	});
+}
+
+var file;
+function addchangepic() {
+	$("#pic").change(function(event){
+		var files = event.target.files;
+		console.info(files);
+		if (files && files.length > 0) {
+	        // 获取目前上传的文件
+		    file = files[0];// 文件大小校验的动作
+		    console.log(file);
+		    if(file.size > 1024 * 1024 * 2) {
+			     alert('图片大小不能超过 2MB!');
+			     return false;
+		    }
+		    // 获取 window 的 URL 工具
+		    var URL = window.URL || window.webkitURL;
+		    // 通过 file 生成目标 url  获取真实的路径
+		    var imgURL = URL.createObjectURL(file);
+		    //用attr将img的src属性改成获得的url
+		    $("#img").attr("src",imgURL);
+		    }
+	});
+}
+
+
+function viewTestShow2(){
+	var x = 1000;
+    var y = 10;
+    var rand = parseInt(Math.random() * (x - y + 1) + y);
+	console.log(rand);
+	var std="";
+	std += "<tr><td><input text-align='center' id='ipe' type='text' value=''></input></td>";
+	std += "<td><input text-align='center' id='ipe"+rand+"' type='text' value=''></input></td>";
+	std += "<td><input type='file' id='pic' name='pic'  multiple='multiple' style='opacity:0;' onclick='addchangepic()'><div id='divs'><img id='img'/></div></td>";
+	std += "<td><input text-align='center' id='ipes"+rand+"' type='text' value=''></input></td>";
+	std += "<td><a href='javascript:add("+rand+")'>[提交]</a></td></tr>";
+	$("#goodstype_info").append($(std));
+}
+
+
+function add(rand){
+	console.log("进来了");
+	var tname = $.trim($("#ipe"+rand+"").val());
+	var status = $.trim($("#ipes"+rand+"").val());
+	console.log(tname);
+	
+	$.ajaxFileUpload({
+		url:'../goodsType/addgoodsType',
+		secureuri: false,
+		fileElementId: "pic",
+		dataType:"json",
+		data:{tname:tname,status:status},
+		success:function(data, stuts) {
+			data = parseInt($.trim(data));
+			if (data == 1) {
+				findAll()
+				alert("商品信息添加成功...");
+			} else {
+				alert("商品信息添加失败...");
+			}
+		},
+		error:function(data, status, e) {
+			alert("商品信息添加失败，请稍后重试...\n" + e);
+		}
+	});
+}
+</script>
+</html>

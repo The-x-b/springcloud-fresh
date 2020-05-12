@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 注意：namespace中的值必须是对应接口的全路径，SQL语句中的id值必须是这个接口中对应方法名称 -->
+<mapper namespace="com.yc.DayFresh.mapper.IOderInfoMapper">
+	<insert id="insert" parameterType="OrderInfo" >
+		 insert into orderinfo values(#{ono}, #{odate}, #{ano}, #{sdate}, #{rdate}, #{status}, #{price}, #{invoice})
+	</insert>
+	
+	
+	
+	<insert id="orderiteminfo"  parameterType="list">
+		insert into orderiteminfo values
+		 <foreach collection="list" item="item" separator="," >
+		 	(#{item.mno}, 0, #{item.ono}, #{item.gno}, #{item.num}, #{item.price}, 0 )
+		 </foreach> 
+		
+	</insert>
+	
+	<select id="getOrder" parameterType="String" resultType="map">
+		select o.odate, i.ono, i.gno, g.gname, g.weight, g.pics,  g.price, i.nums from orderinfo o, orderiteminfo i, goodsinfo g where
+		i.ono=o.ono and i.gno=g.gno and mno=#{mno} and i.status=0
+	</select>
+	
+	<select id="getOrder1" parameterType="String" resultType="map">
+		select o.odate, i.ono, i.gno, g.gname, g.weight, g.pics,  g.price, i.nums from orderinfo o, orderiteminfo i, goodsinfo g where
+		i.ono=o.ono and i.gno=g.gno and mno=#{mno} and i.status=1
+	</select>
+	
+	
+</mapper>

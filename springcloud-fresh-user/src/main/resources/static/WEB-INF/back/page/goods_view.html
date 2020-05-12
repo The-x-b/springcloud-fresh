@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>源辰-浏览新闻信息</title>
+<link rel="shortcut icon" href="../images/copylogo.png" type="image/x-icon" />
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/main1.css">
+
+</head>
+<style>
+#div {
+	width: 100px;
+	height: 100px;
+	/* 如果需要让图片各方位居中 */
+	display: flex;
+  	justify-content: center;
+  	align-items: center;
+}
+/* 让图片自适应父级大小 */
+img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+input{
+	text-align:center;
+
+}
+
+</style>
+<body>
+<div id="table" class="mt10">
+	<div class="box span10 oh">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+			<thead>
+				<tr>
+					<th width="80">商品信息编号</th>
+                   	<th width="80">商品名称</th>
+                   	<th width="80">商品价格</th>
+                   	<th width="80">商品库存</th>
+                   	<th width="120">商品图片</th>
+                   	<th width="80">保质期</th>
+                   	<th width="80">商品重量</th>
+                   	<th width="80">操作</th>
+                </tr>
+             </thead>
+             <tbody id="news_info" align="center">
+				<tr>
+					
+				</tr>
+             </tbody>
+		</table>
+        <div class="page mt10">
+		<div class="pagination">
+            <ul id ="pagination_info">
+				<li class="first-child active"><a href="javascript:void()" onclick=" ">首页</a></li>
+				<li class="active"><a href="javascript:void()" onclick=" ">1</a></li>
+				<li><a href="javascript:void()" onclick=" ">2</a></li>
+				<li class="last-child"><a href="javascript:void()" onclick=" ">末页</a></li>'
+			</ul>
+		</div>
+        </div>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript">
+var page = 1;
+var rows = 10;
+var totalSize = 0;
+var totalPage = 0;
+
+$(function(){
+	$.post("../goods/backfinds", null, function(data) {
+		
+		var str = "";
+		 $.each(data, function(index, item) {                   
+			str += '<tr><td><input id="ipn" type="text" value="'+ item.gno +'"></input></td>';
+			str += '<td><input id="inp'+item.gno+'" type="text" value="' + item.gname + '"></input></td>';
+			str += '<td><input id="inp1'+item.gno+'" type="text" value="' + item.price + '"></input></td>';
+			str += '<td><input id="inp2'+item.gno+'" type="text" value="' + item.balance + '"></input></td>';
+			str += '<td><div id="div"><input type="file" id="file_input" οnchange="addFile(this);" style="display:none"/><img id="file_img" src="../../'+ item.pics + '"></div></td>';
+			str += '<td><input id="inp5'+item.gno+'" type="text" value="' + item.qperied + '"></input></td>';
+			str += '<td><input id="inp6'+item.gno+'" type="text" value="' + item.weight + '"></input></td>';
+			str += '<td><a href="javascript:viewTestShow('+item.gno+',)">[修改]</a>&nbsp;&nbsp';
+			str += '<a href="javascript:viewTestShow1('+item.gno+')">[删除]</a></td></tr>';
+		}); 
+		 $("#news_info").append($(str));
+	}, "json");
+});
+
+
+/* function viewTestShow1(aid) {
+	$.post("../admin/delete", {aid:aid}, function(data){
+		data= parseInt($.trim(data));
+		if(data > 0){
+			alert("删除管理员成功");
+			
+		}else{
+			alert("删除失败，请稍后重试...");
+		}
+	}, "text");
+}
+ */
+
+/* function viewTestShow(aid) {
+	//console.log(aid);
+	var aname = $("#inp"+aid+"").val();
+	var pwd = $("#inp2"+aid+"").val();
+	var tel = $("#inp3"+aid+"").val();
+	
+	 $.post("../admin/update", {aid:aid, aname:aname, pwd:pwd, tel:tel}, function(data){
+		data= parseInt($.trim(data));
+		if(data > 0){
+			alert("修改信息成功...");
+			
+		}else{
+			alert("修改信息失败，请稍后重试...");
+		}
+	}, "text"); 
+} */
+
+</script>
+</html>
